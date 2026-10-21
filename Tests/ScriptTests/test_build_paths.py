@@ -64,7 +64,12 @@ class BuildPathTests(unittest.TestCase):
     def test_relative_override_is_resolved_against_checkout(self):
         self.env["TRACKBOARD_BUILD_DIR"] = "custom output"
         _, scratch, _ = self.paths()
-        self.assertEqual(scratch, self.checkout / "custom output/swiftpm")
+        self.assertEqual(scratch, self.checkout.resolve() / "custom output/swiftpm")
+
+    def test_checkout_symlink_uses_the_same_cache_as_its_target(self):
+        alias = self.root / "checkout alias"
+        alias.symlink_to(self.checkout, target_is_directory=True)
+        self.assertEqual(self.paths(alias), self.paths())
 
     def test_test_wrapper_forwards_scratch_path_and_arguments(self):
         swift = self.bin / "swift"
