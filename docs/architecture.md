@@ -62,6 +62,14 @@ registration uses Carbon's Text Input Source Services. A normal physical keyboar
 continues to work when the pad is closed; the pad shortcut is handled only while
 Trackboard is the selected input method.
 
+On macOS, `scripts/build-paths.sh` chooses a per-checkout directory under
+`~/Library/Caches/Trackboard/` for Swift scratch files and the app. Both test and
+build wrappers use it so cloud-sync metadata cannot attach to generated bundles.
+Packaging copies source resources without extended attributes and strips any
+remaining attributes only from the generated app before signing. Source files
+are not rewritten or stripped. See
+[Apple QA1940](https://developer.apple.com/library/archive/qa/qa1940/_index.html).
+
 No network requests, handwriting persistence, analytics, or clipboard operations
 are implemented. `UserDefaults` stores two preferences: recognition language
 and spelling correction.

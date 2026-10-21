@@ -64,7 +64,6 @@ final class CaptureView: NSView {
         self.showsControls = showsControls
         super.init(frame: frame)
         autoresizingMask = [.width, .height]
-        acceptsTouchEvents = true
         allowedTouchTypes = .indirect
         wantsRestingTouches = false
         setAccessibilityLabel("Handwriting surface")

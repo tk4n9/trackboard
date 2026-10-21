@@ -18,15 +18,28 @@ jobs:
       - uses: actions/checkout@v4
       - name: Toolchain
         run: swift --version
+      - name: Build script regression tests
+        run: python3 -m unittest discover -s Tests/ScriptTests -v
       - name: Unit tests
-        run: swift test
+        run: ./scripts/test.sh
+      - name: Add source metadata to exercise clean packaging
+        run: |
+          python3 - <<'PY'
+          import os
+          os.setxattr('Resources/Info.plist', 'com.apple.FinderInfo', bytes(32))
+          os.setxattr('Resources/Info.plist', 'com.apple.ResourceFork', b'packaging regression test')
+          PY
       - name: Package application
         run: ./scripts/build.sh
       - name: Report recognition languages
-        run: dist/Trackboard.app/Contents/MacOS/Trackboard --languages
+        run: |
+          source scripts/build-paths.sh
+          "$TRACKBOARD_APP_PATH/Contents/MacOS/Trackboard" --languages
       - name: Archive application
-        run: ditto -c -k --keepParent dist/Trackboard.app dist/Trackboard.zip
+        run: |
+          source scripts/build-paths.sh
+          ditto -c -k --keepParent "$TRACKBOARD_APP_PATH" "$RUNNER_TEMP/Trackboard.zip"
       - uses: actions/upload-artifact@v4
         with:
           name: Trackboard-${{ matrix.os }}
-          path: dist/Trackboard.zip
+          path: ${{ runner.temp }}/Trackboard.zip

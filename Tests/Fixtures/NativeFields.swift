@@ -58,8 +58,10 @@ final class FixtureDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
 }
 
-let application = NSApplication.shared
-application.setActivationPolicy(.regular)
-let delegate = FixtureDelegate()
-application.delegate = delegate
-application.run()
+MainActor.assumeIsolated {
+    let application = NSApplication.shared
+    application.setActivationPolicy(.regular)
+    let delegate = FixtureDelegate()
+    application.delegate = delegate
+    application.run()
+}

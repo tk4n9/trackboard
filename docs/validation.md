@@ -7,7 +7,8 @@ test suite does not demonstrate that the macOS app works.
 
 ## Automated checks on a Mac
 
-Run `swift test` and `./scripts/build.sh` from the repository. The tests cover
+Run `./scripts/test.sh` and `./scripts/build.sh` from the repository. The wrappers
+keep generated bundles outside synced source folders. The tests cover
 stroke separation and cancellation, multitouch recovery, candidate ordering,
 Hangul normalization, late-result rejection, raster dimensions, and availability
 of Korean and English in Vision. The macOS-only tests do not measure recognition
@@ -17,6 +18,10 @@ The [GitHub workflow](https://github.com/tk4n9/trackboard/actions) performs thes
 native build and API checks on `macos-14` and `macos-15`. Check the run for the
 commit being tested; a successful hosted build does not verify physical trackpad
 capture or cross-application behavior.
+
+The packaging job adds Finder metadata and a resource fork to the source plist
+before building, then verifies the signature on the clean generated app. Script
+tests also check paths with spaces, cache isolation, and test-argument forwarding.
 
 ## Manual acceptance
 

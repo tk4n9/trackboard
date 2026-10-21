@@ -1,12 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-TRACKBOARD_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ "$(uname -s)" != "Darwin" ]]; then
     printf '%s\n' 'Trackboard can only be installed on macOS.' >&2
     exit 2
 fi
-APP="$TRACKBOARD_ROOT/dist/Trackboard.app"
+source "$(dirname -- "${BASH_SOURCE[0]}")/build-paths.sh"
+APP="$TRACKBOARD_APP_PATH"
 if [[ ! -x "$APP/Contents/MacOS/Trackboard" ]]; then
     printf '%s\n' 'Build the app first: ./scripts/build.sh' >&2
     exit 2
@@ -16,7 +16,7 @@ DESTINATION="$HOME/Library/Input Methods/Trackboard.app"
 mkdir -p "$HOME/Library/Input Methods"
 STAGE="$(mktemp -d "$HOME/Library/Input Methods/.trackboard-install.XXXXXX")"
 trap 'rm -rf -- "$STAGE"' EXIT
-ditto "$APP" "$STAGE/Trackboard.app"
+ditto --norsrc --noextattr "$APP" "$STAGE/Trackboard.app"
 codesign --verify --strict "$STAGE/Trackboard.app"
 if [[ -e "$DESTINATION" ]]; then
     EXISTING_ID="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$DESTINATION/Contents/Info.plist")"

@@ -25,11 +25,18 @@ cd trackboard
 # Install Apple's developer tools if needed:
 xcode-select --install
 
+./scripts/test.sh
 ./scripts/build.sh
 ./scripts/install.sh
 ```
 
-The build creates `dist/Trackboard.app` for your Mac's architecture. For a
+On macOS, these scripts put Swift's scratch directory and `Trackboard.app` under
+`~/Library/Caches/Trackboard/<checkout-id>/`, outside the source checkout. This
+also works when the repository is in Dropbox or another synced folder. The build
+prints the app's full path, and the installer finds it automatically. Set
+`TRACKBOARD_BUILD_DIR` to use another unsynced build location.
+
+The build targets your Mac's architecture. For a
 universal Apple silicon and Intel build, use
 `TRACKBOARD_UNIVERSAL=1 ./scripts/build.sh`. Builds are signed locally by default;
 set `TRACKBOARD_SIGN_IDENTITY` to use your own signing identity. Public distribution
@@ -84,9 +91,9 @@ change the selected language, turn spelling correction off, or undo and redraw.
 ## Development and verification
 
 ```sh
-swift test
+./scripts/test.sh
 ./scripts/build.sh
-dist/Trackboard.app/Contents/MacOS/Trackboard --languages
+python3 -m unittest discover -s Tests/ScriptTests
 
 # Native text-field fixture:
 swift Tests/Fixtures/NativeFields.swift
@@ -95,7 +102,7 @@ swift Tests/Fixtures/NativeFields.swift
 open Tests/Fixtures/input-fields.html
 ```
 
-On Linux, `swift test` builds only the platform-independent core. On macOS it
+On Linux, `./scripts/test.sh` builds only the platform-independent core. On macOS it
 also compiles the input source and tests the renderer and recognizer's supported
 languages. The [macOS workflow](https://github.com/tk4n9/trackboard/actions)
 builds and packages on hosted Mac runners. Check its results separately from the
@@ -114,3 +121,15 @@ physical trackpad and cross-application checks.
 Read [architecture](docs/architecture.md) for API references and design choices.
 To uninstall, switch to another input source, remove Trackboard from Keyboard
 settings, move its app out of `~/Library/Input Methods/`, and log out and back in.
+
+## Code signing error in a synced folder
+
+If signing reports `resource fork, Finder information, or similar detritus not
+allowed`, run `git pull` and use `./scripts/test.sh` instead of plain `swift test`.
+The wrapper keeps generated bundles outside the checkout, and the packaging
+script removes inherited metadata from its newly generated app before signing.
+It does not remove metadata from your source files or Dropbox folders. Plain
+`swift test` still defaults to the checkout's `.build/` directory.
+
+Apple explains the rejected metadata in
+[Technical Q&A QA1940](https://developer.apple.com/library/archive/qa/qa1940/_index.html).
