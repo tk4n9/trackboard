@@ -24,11 +24,8 @@ jobs:
         run: ./scripts/test.sh
       - name: Add source metadata to exercise clean packaging
         run: |
-          python3 - <<'PY'
-          import os
-          os.setxattr('Resources/Info.plist', 'com.apple.FinderInfo', bytes(32))
-          os.setxattr('Resources/Info.plist', 'com.apple.ResourceFork', b'packaging regression test')
-          PY
+          xattr -wx com.apple.FinderInfo "$(printf '%064d' 1)" Resources/Info.plist
+          xattr -w com.apple.ResourceFork 'packaging regression test' Resources/Info.plist
       - name: Package application
         run: ./scripts/build.sh
       - name: Report recognition languages
