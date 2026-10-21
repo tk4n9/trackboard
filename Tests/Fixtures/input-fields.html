@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Trackboard input field checks</title>
+<style>
+  body { max-width: 720px; margin: 40px auto; font: 16px system-ui; padding: 24px; }
+  label { display: block; margin: 24px 0; }
+  input, textarea, [contenteditable] { display: block; box-sizing: border-box; width: 100%;
+    padding: 12px; margin-top: 8px; font: 20px system-ui; border: 1px solid #888; border-radius: 6px; }
+  [contenteditable] { min-height: 90px; }
+  output { display: block; margin-top: 24px; }
+</style>
+<h1>Trackboard input field checks</h1>
+<p>Click a field, select Trackboard in the macOS input menu, and handwrite a short word.
+Try Korean and English, replacement of a selection, and Undo after insertion.</p>
+<label>Single-line input <input id="plain" value="Replace this selection"></label>
+<label>Multiline textarea <textarea id="multiline" rows="3"></textarea></label>
+<label>Rich text editor <span id="rich" contenteditable="true" role="textbox" aria-multiline="true"></span></label>
+<label>Protected input (macOS or the browser may disallow third-party input methods)
+  <input id="protected" type="password" autocomplete="off"></label>
+<output id="events" aria-live="polite">No input events yet.</output>
+<script>
+  let count = 0;
+  document.addEventListener('input', event => {
+    // Report event metadata only, never the field value (especially passwords).
+    document.querySelector('#events').textContent =
+      `${++count} input events; field: ${event.target.id}; type: ${event.inputType || 'unknown'}`;
+  });
+</script>
+</html>
