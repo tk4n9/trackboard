@@ -1,9 +1,13 @@
 # Validation status and MacBook acceptance checks
 
-The current development host is Linux. The 28 portable Swift tests pass with
-Swift 6.2.4. Native compilation, app installation, physical touch capture,
-recognition quality, and cross-app insertion are **pending**. A passing portable
-test suite does not demonstrate that the macOS app works.
+The development host is Linux. The 28 portable Swift tests and six build-script
+tests pass locally. Hosted macOS 14 and 15 runners also passed the Swift tests,
+native compilation, and signed app packaging for code commit `8cd29f0` in
+[run 39629089287](https://github.com/tk4n9/trackboard/actions/runs/39629089287).
+Packaging passed after Finder metadata and a resource fork were added to the
+source plist. Installation on a user's Mac, physical touch capture, recognition
+quality, and cross-app insertion are **pending**; hosted tests do not establish
+that end-to-end behavior.
 
 ## Automated checks on a Mac
 

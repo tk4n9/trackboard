@@ -5,10 +5,10 @@ field. Trackboard is implemented as a macOS input source, with a handwriting
 overlay and on-device recognition through Apple's Vision framework. Other
 languages appear when the installed macOS recognizer supports them.
 
-**Status: experimental, awaiting native macOS validation.** The portable logic
-passes its tests on Linux. The macOS application has not yet been compiled or
-tested on a MacBook; installation, real trackpad capture, recognition accuracy,
-and compatibility across apps remain unverified. See [validation](docs/validation.md).
+**Status: experimental, awaiting MacBook validation.** Automated tests, native
+compilation, and signed app packaging pass on hosted macOS 14 and 15 runners.
+Installation on a user's Mac, real trackpad capture, recognition accuracy, and
+compatibility across apps remain unverified. See [validation](docs/validation.md).
 
 ## Build and install on your Mac
 
